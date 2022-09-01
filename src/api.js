@@ -9,17 +9,16 @@ const DEFAULT_ENDPOINT = 'https://economia.awesomeapi.com.br/json/all';
 //   return currencyArray;
 // };
 
-const filterData = (data) => {
-  const currencyArray = data.filter((item) => item !== 'USDT');
+// const filterData = (data) => {
+//   const currencyArray = data.filter((item) => item !== 'USDT');
 
-  return currencyArray;
-};
+//   return currencyArray;
+// };
 
 const fetchCurrencyData = async () => {
   const response = await fetch(DEFAULT_ENDPOINT);
-  const data = Object.keys(await response.json());
-
-  return filterData(data);
+  const data = await response.json();
+  return data;
 };
 
 export default fetchCurrencyData;

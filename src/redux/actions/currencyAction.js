@@ -13,7 +13,8 @@ const failedRequest = (error) => ({
 
 const fetchCurrencyAction = () => async (dispatch) => {
   try {
-    const currency = await fetchCurrencyData();
+    const data = await fetchCurrencyData();
+    const currency = Object.keys(data).filter((key) => key !== 'USDT');
     if (!currency) throw new Error('Não foi possível recuperar os dados');
     dispatch(saveCurrency(currency));
   } catch (error) {
