@@ -1,2 +1,3 @@
 export const USER_LOGIN = 'LOG_IN';
-export const FOO_BAR = 'FOO_BAR';
+export const SAVE_CURRENCY = 'SAVE_CURRENCY';
+export const FAILED_REQUEST = 'FAILED_REQUEST';
