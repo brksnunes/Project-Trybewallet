@@ -1,12 +1,12 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWith from './helpers/renderWith';
 
 const TEST_EMAIL = 'xablau@bol.com';
 const TEST_PASSWORD = 'xablau';
-const TEST_VALUE = 100;
+const TEST_VALUE = '67';
 const TEST_DESCRIPTION = 'xablau';
 const EMAIL_INPUT = 'email-input';
 const PASSWORD_INPUT = 'password-input';
@@ -21,6 +21,14 @@ function loginWithCredentials() {
   expect(loginButton).not.toBeDisabled();
 
   userEvent.click(loginButton);
+}
+function addExpense() {
+  const valueInput = screen.getByTestId('value-input');
+  const descriptionInput = screen.getByTestId('description-input');
+  const addExpenseButton = screen.getByRole('button', { name: 'Adicionar despesa' });
+  userEvent.type(valueInput, TEST_VALUE);
+  userEvent.type(descriptionInput, TEST_DESCRIPTION);
+  userEvent.click(addExpenseButton);
 }
 describe('Wallet page', () => {
   test('If Wallet route is correct', () => {
@@ -43,12 +51,24 @@ describe('Wallet page', () => {
   test('If form can be filled', () => {
     renderWith(<App />, { initialEntries: ['/'] });
     loginWithCredentials();
-    const valueInput = screen.getByTestId('value-input');
-    const descriptionInput = screen.getByTestId('description-input');
-    userEvent.type(valueInput, TEST_VALUE);
-    userEvent.type(descriptionInput, TEST_DESCRIPTION);
+    addExpense();
+  });
+  test('If header updates correctly', async () => {
+    renderWith(<App />, { initialEntries: ['/'] });
+    loginWithCredentials();
+    addExpense();
+    const headerTotalField = screen.getByTestId('total-field');
+    await waitFor(() => expect(headerTotalField).not.toHaveTextContent('0'));
+  });
+  test('If is possible to delete a expense', async () => {
+    renderWith(<App />, { initialEntries: ['/'] });
+    loginWithCredentials();
+    addExpense();
+    const headerTotalField = screen.getByTestId('total-field');
+    await waitFor(() => expect(headerTotalField).not.toHaveTextContent('0'));
 
-    expect(valueInput).toHaveAttribute('value', TEST_VALUE);
-    expect(descriptionInput).toHaveAttribute('value', TEST_DESCRIPTION);
+    const deleteButton = screen.getByTestId('delete-btn');
+    userEvent.click(deleteButton);
+    await waitFor(() => expect(headerTotalField).toHaveTextContent('0'));
   });
 });
